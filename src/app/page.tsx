@@ -5,7 +5,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-6 lg:px-8">
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-5 focus:top-4 focus:rounded-md focus:bg-stone-950 focus:px-3 focus:py-2 focus:text-sm focus:text-white"
+            className="sr-only hover:bg-stone-800 focus:not-sr-only focus:absolute focus:left-5 focus:top-4 focus:rounded-md focus:bg-stone-950 focus:px-3 focus:py-2 focus:text-sm focus:text-white"
           >
             Skip to application
           </a>
