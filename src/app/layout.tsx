@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Candidate Application UI",
-  description: "Candidate application interface built with Next.js.",
+  title: "25th&Staffing | Candidate Application",
+  description: "Candidate application workspace for 25th&Staffing.",
+  applicationName: "25th&Staffing",
 };
 
 export default function RootLayout({
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="min-h-screen bg-stone-50 text-stone-950 antialiased">
+        {children}
+      </body>
     </html>
   );
 }
