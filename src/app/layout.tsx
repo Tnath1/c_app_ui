@@ -19,7 +19,9 @@ const themeScript = `
         ? storedTheme
         : systemTheme;
 
-      document.documentElement.classList.toggle("dark", theme === "dark");
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(theme);
+      document.documentElement.dataset.theme = theme;
       document.documentElement.style.colorScheme = theme;
     } catch (_) {}
   })();
