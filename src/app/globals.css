@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 html {
   background: #fafaf9;
+  color-scheme: light;
   scroll-behavior: smooth;
+}
+
+html.dark {
+  background: #0c0a09;
+  color-scheme: dark;
 }
 
 body {
@@ -20,6 +28,23 @@ a {
     background-color 160ms ease,
     border-color 160ms ease,
     opacity 160ms ease;
+}
+
+button {
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 ::selection {
@@ -40,6 +65,10 @@ textarea {
   }
 
   a {
+    transition-duration: 0ms;
+  }
+
+  button {
     transition-duration: 0ms;
   }
 }
