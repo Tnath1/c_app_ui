@@ -5,23 +5,27 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-stone-50 dark:bg-stone-950">
+    <main className="min-h-screen bg-stone-50 dark:bg-stone-950" id="top">
       <header className="sticky top-0 z-30 border-b border-stone-200 bg-white/95 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5 sm:px-6 lg:px-8">
           <a
             href="#main-content"
             className="sr-only hover:bg-stone-800 focus:not-sr-only focus:absolute focus:left-5 focus:top-4 focus:rounded-md focus:bg-stone-950 focus:px-3 focus:py-2 focus:text-sm focus:text-white dark:focus:bg-stone-100 dark:focus:text-stone-950"
           >
             Skip to application
           </a>
-          <div>
-            <p className="text-sm font-semibold tracking-normal text-stone-950 dark:text-stone-50">
+          <a
+            aria-label="Scroll to top"
+            className="rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-stone-100 dark:focus-visible:ring-offset-stone-950"
+            href="#top"
+          >
+            <p className="text-[13px] font-semibold tracking-normal text-stone-950 dark:text-stone-50">
               25th&amp;Staffing
             </p>
-            <p className="text-xs text-stone-500 dark:text-stone-400">
+            <p className="text-[11px] text-stone-500 dark:text-stone-400">
               Candidate intake
             </p>
-          </div>
+          </a>
           <div className="flex items-center">
             <ThemeToggle />
           </div>
@@ -30,21 +34,21 @@ export default function Home() {
 
       <section
         id="main-content"
-        className="mx-auto grid w-full max-w-6xl gap-7 px-5 py-8 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:px-8 lg:py-10"
+        className="mx-auto grid w-full max-w-6xl gap-6 px-5 py-7 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:px-8 lg:py-9"
       >
-        <aside className="lg:pt-5">
-          <p className="text-xs font-medium uppercase tracking-normal text-stone-500 dark:text-stone-400">
+        <aside className="lg:pt-4">
+          <p className="text-[11px] font-medium uppercase tracking-normal text-stone-500 dark:text-stone-400">
             Candidate application
           </p>
-          <h1 className="mt-3 max-w-xl text-3xl font-semibold tracking-normal text-stone-950 sm:text-4xl dark:text-stone-50">
+          <h1 className="mt-2 max-w-xl text-2xl font-semibold tracking-normal text-stone-950 sm:text-3xl dark:text-stone-50">
             Apply for an open role.
           </h1>
-          <p className="mt-4 max-w-xl text-sm leading-6 text-stone-600 sm:text-base dark:text-stone-300">
+          <p className="mt-3 max-w-xl text-sm leading-6 text-stone-600 dark:text-stone-300">
             Share your details with the 25th&amp;Staffing team. We will review
             your application and follow up when there is a strong match.
           </p>
 
-          <div className="mt-6 grid gap-2.5 text-sm text-stone-600 dark:text-stone-300">
+          <div className="mt-5 grid gap-2 text-[13px] leading-5 text-stone-600 dark:text-stone-300">
             <div className="flex gap-3">
               <span className="mt-2 h-1.5 w-1.5 rounded-full bg-stone-900 dark:bg-stone-100" />
               <p>Applications are reviewed by the staffing team.</p>
@@ -62,21 +66,21 @@ export default function Home() {
 
         <section
           aria-labelledby="application-form-title"
-          className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-900"
+          className="rounded-lg border border-stone-200 bg-white p-4 shadow-sm sm:p-5 dark:border-stone-800 dark:bg-stone-900"
         >
-          <div className="border-b border-stone-200 pb-4 dark:border-stone-800">
-            <p className="text-xs font-medium uppercase tracking-normal text-stone-500 dark:text-stone-400">
+          <div className="border-b border-stone-200 pb-3.5 dark:border-stone-800">
+            <p className="text-[11px] font-medium uppercase tracking-normal text-stone-500 dark:text-stone-400">
               Application overview
             </p>
             <h2
               id="application-form-title"
-              className="mt-1 text-xl font-semibold tracking-normal text-stone-950 dark:text-stone-50"
+              className="mt-1 text-lg font-semibold tracking-normal text-stone-950 dark:text-stone-50"
             >
               Candidate profile intake
             </h2>
           </div>
 
-          <div className="pt-5">
+          <div className="pt-4">
             <Suspense
               fallback={
                 <LoadingState
