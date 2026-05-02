@@ -18,11 +18,11 @@ export function ApplicationSuccessModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/55 px-4 py-6 backdrop-blur-sm"
       role="dialog"
     >
-      <div className="w-full max-w-md rounded-lg border border-stone-200 bg-white p-5 shadow-xl dark:border-stone-800 dark:bg-stone-900">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+      <div className="w-full max-w-md rounded-lg border border-stone-200 bg-white p-6 text-center shadow-xl dark:border-stone-800 dark:bg-stone-900">
+        <div className="success-check mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
           <svg
             aria-hidden="true"
-            className="h-5 w-5"
+            className="h-6 w-6"
             fill="none"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -41,17 +41,17 @@ export function ApplicationSuccessModal({
           Application received
         </p>
         <h3
-          className="mt-1 text-xl font-semibold text-stone-950 dark:text-stone-50"
+          className="mx-auto mt-1 max-w-sm text-xl font-semibold text-stone-950 dark:text-stone-50"
           id="application-success-title"
         >
           Thank you, {submission.candidateName}.
         </h3>
-        <p className="mt-3 text-sm leading-6 text-stone-600 dark:text-stone-300">
+        <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-stone-600 dark:text-stone-300">
           {submission.message} We will contact you by email when there is an
           update.
         </p>
 
-        <div className="mt-4 rounded-md border border-stone-200 bg-stone-50 px-3 py-2 dark:border-stone-800 dark:bg-stone-950">
+        <div className="mx-auto mt-4 max-w-xs rounded-md border border-stone-200 bg-stone-50 px-3 py-2 dark:border-stone-800 dark:bg-stone-950">
           <p className="text-xs text-stone-500 dark:text-stone-400">
             Reference
           </p>
@@ -60,7 +60,7 @@ export function ApplicationSuccessModal({
           </p>
         </div>
 
-        <div className="mt-5 flex justify-end">
+        <div className="mt-5 flex justify-center">
           <Button onClick={onSubmitAnother} type="button" variant="secondary">
             Submit another application
           </Button>
