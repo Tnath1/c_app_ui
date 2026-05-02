@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "25th&Staffing | Candidate Application",
   description: "Candidate application workspace for 25th&Staffing.",
   applicationName: "25th&Staffing",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 const themeScript = `

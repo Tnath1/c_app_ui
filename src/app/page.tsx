@@ -35,9 +35,9 @@ export default function Home() {
 
       <section
         id="main-content"
-        className="mx-auto grid w-full max-w-6xl gap-6 px-5 py-7 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:px-8 lg:py-9"
+        className="mx-auto grid w-full max-w-6xl gap-6 px-5 py-7 sm:px-6 lg:px-8 lg:py-9"
       >
-        <aside className="lg:pt-4">
+        <aside>
           <p className="text-[11px] font-medium uppercase tracking-normal text-stone-500 dark:text-stone-400">
             Candidate application
           </p>
