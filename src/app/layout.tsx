@@ -13,12 +13,9 @@ const themeScript = `
   (function () {
     try {
       var storedTheme = localStorage.getItem("25th-staffing-theme");
-      var systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
       var theme = storedTheme === "dark" || storedTheme === "light"
         ? storedTheme
-        : systemTheme;
+        : "dark";
 
       document.documentElement.classList.remove("light", "dark");
       document.documentElement.classList.add(theme);
@@ -34,7 +31,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      className="dark"
+      data-theme="dark"
+      lang="en"
+      style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
+    >
       <body className="min-h-screen bg-stone-50 text-stone-950 antialiased dark:bg-stone-950 dark:text-stone-50">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <ThemeProvider>

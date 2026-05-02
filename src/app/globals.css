@@ -3,9 +3,14 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 html {
+  background: #0c0a09;
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+html[data-theme="light"] {
   background: #fafaf9;
   color-scheme: light;
-  scroll-behavior: smooth;
 }
 
 html[data-theme="dark"] {

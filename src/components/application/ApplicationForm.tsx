@@ -147,10 +147,23 @@ export function ApplicationForm() {
     });
   }
 
+  function scrollToPageTop() {
+    window.requestAnimationFrame(() => {
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      window.scrollTo({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        top: 0,
+      });
+    });
+  }
+
   function closeSuccessModal() {
     submission.reset();
     setFormError(undefined);
-    scrollToFormStart();
+    scrollToPageTop();
   }
 
   function resetApplication() {
