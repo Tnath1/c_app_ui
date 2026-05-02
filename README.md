@@ -22,6 +22,17 @@ The project turns a static application flow into a small frontend system with re
 - Light/dark theme toggle, with dark mode as the default.
 - Clean component split between page shell, feature components, shared UI, API clients, validation, and types.
 
+## Accessibility
+
+The form is built to support keyboard and screen-reader users:
+
+- Required fields expose accessible required state, not only the visible `*`.
+- Field errors are connected to their inputs and announced when they appear.
+- Invalid submit moves focus to the first field that needs attention.
+- Loading, error, empty, submitting, and success states are announced through live regions.
+- The success confirmation behaves as a dialog: focus moves into it, `Tab` stays inside it, and `Escape` closes it.
+- Closing the dialog returns focus to a sensible place in the page.
+
 ## Architecture
 
 The app is organized around the application flow, with generic pieces separated from feature-specific logic.
@@ -109,6 +120,15 @@ http://localhost:3000?submitState=error
 ```
 
 Submit loading appears briefly after submitting the form. The success modal appears after a valid submission on the default route.
+
+## Manual Accessibility Checks
+
+- Use `Tab` and `Shift + Tab` to move through the page without a mouse.
+- Submit an empty form and confirm focus moves to the first invalid field.
+- Submit a valid form and confirm focus moves into the success dialog.
+- While the dialog is open, confirm `Tab` stays between the dialog actions.
+- Press `Escape` to close the dialog.
+- With a screen reader enabled, confirm loading, error, submit, and success updates are announced.
 
 ## Notes
 

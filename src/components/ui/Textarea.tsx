@@ -33,6 +33,7 @@ export function Textarea({
       <textarea
         aria-describedby={describedBy}
         aria-invalid={error ? "true" : "false"}
+        aria-required={isRequired ? "true" : undefined}
         className={cn(
           "w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-950 shadow-sm outline-none transition-colors placeholder:text-stone-400 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 disabled:bg-stone-100 disabled:text-stone-500 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-50 dark:placeholder:text-stone-500 dark:focus:border-stone-100 dark:focus:ring-stone-100/10 dark:disabled:bg-stone-900",
           error &&
