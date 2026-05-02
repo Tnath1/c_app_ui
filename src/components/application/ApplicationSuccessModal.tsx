@@ -61,7 +61,7 @@ export function ApplicationSuccessModal({
         </div>
 
         <div className="mt-5 flex justify-center">
-          <Button onClick={onSubmitAnother} type="button" variant="secondary">
+          <Button onClick={onSubmitAnother} type="button" variant="primary">
             Submit another application
           </Button>
         </div>
