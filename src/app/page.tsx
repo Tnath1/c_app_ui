@@ -18,6 +18,7 @@ export default function Home() {
             aria-label="Scroll to top"
             className="rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-stone-100 dark:focus-visible:ring-offset-stone-950"
             href="#top"
+            id="site-brand"
           >
             <p className="text-[13px] font-semibold tracking-normal text-stone-950 dark:text-stone-50">
               25th&amp;Staffing

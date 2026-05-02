@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import type { KeyboardEvent } from "react";
 import type { ApplicationSubmissionResponse } from "@/types/application";
 import { Button } from "@/components/ui";
 
@@ -12,12 +16,71 @@ export function ApplicationSuccessModal({
   onSubmitAnother,
   submission,
 }: ApplicationSuccessModalProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    window.requestAnimationFrame(() => {
+      titleRef.current?.focus();
+    });
+  }, []);
+
+  function getFocusableElements() {
+    const dialog = dialogRef.current;
+
+    if (!dialog) {
+      return [];
+    }
+
+    return Array.from(
+      dialog.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+  }
+
+  function handleDialogKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      onClose();
+      return;
+    }
+
+    if (event.key !== "Tab") {
+      return;
+    }
+
+    const focusableElements = getFocusableElements();
+
+    if (focusableElements.length === 0) {
+      event.preventDefault();
+      titleRef.current?.focus();
+      return;
+    }
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (event.shiftKey && document.activeElement === firstElement) {
+      event.preventDefault();
+      lastElement.focus();
+    }
+
+    if (!event.shiftKey && document.activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  }
+
   // The form remains mounted behind the modal so the user gets clear completion feedback.
   return (
     <div
+      aria-describedby="application-success-description"
       aria-labelledby="application-success-title"
       aria-modal="true"
       className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/55 px-4 py-6 backdrop-blur-sm"
+      onKeyDown={handleDialogKeyDown}
+      ref={dialogRef}
       role="dialog"
     >
       <div className="relative w-full max-w-md rounded-lg border border-stone-200 bg-white p-6 text-center shadow-xl dark:border-stone-800 dark:bg-stone-900">
@@ -67,10 +130,15 @@ export function ApplicationSuccessModal({
         <h3
           className="mx-auto mt-1 max-w-sm text-xl font-semibold text-stone-950 dark:text-stone-50"
           id="application-success-title"
+          ref={titleRef}
+          tabIndex={-1}
         >
           Thank you, {submission.candidateName}.
         </h3>
-        <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-stone-600 dark:text-stone-300">
+        <p
+          className="mx-auto mt-3 max-w-sm text-sm leading-6 text-stone-600 dark:text-stone-300"
+          id="application-success-description"
+        >
           {submission.message} We will contact you by email when there is an
           update.
         </p>

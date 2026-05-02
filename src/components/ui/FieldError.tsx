@@ -11,7 +11,11 @@ export function FieldError({ children, id }: FieldErrorProps) {
   }
 
   return (
-    <p className="mt-1.5 text-sm text-red-600 dark:text-red-400" id={id}>
+    <p
+      className="mt-1.5 text-sm text-red-600 dark:text-red-400"
+      id={id}
+      role="alert"
+    >
       {children}
     </p>
   );
