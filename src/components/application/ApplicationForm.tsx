@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ApiError, getRoles, submitApplication } from "@/lib/api";
 import type { ApplicationState } from "@/lib/api/applications";
@@ -70,6 +70,7 @@ function createRoleOptions(roles: Awaited<ReturnType<typeof getRoles>>) {
 
 export function ApplicationForm() {
   const [formError, setFormError] = useState<string | undefined>();
+  const formStartRef = useRef<HTMLFormElement>(null);
   const searchParams = useSearchParams();
 
   // These params let us preview loading/error/empty states without adding demo controls to the UI.
@@ -133,10 +134,43 @@ export function ApplicationForm() {
         ? "No open roles"
         : "Select a role";
 
+  function scrollToFormStart() {
+    window.requestAnimationFrame(() => {
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      formStartRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    });
+  }
+
+  function scrollToPageTop() {
+    window.requestAnimationFrame(() => {
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      window.scrollTo({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        top: 0,
+      });
+    });
+  }
+
+  function closeSuccessModal() {
+    submission.reset();
+    setFormError(undefined);
+    scrollToPageTop();
+  }
+
   function resetApplication() {
     submission.reset();
     form.reset(applicationDefaultValues);
     setFormError(undefined);
+    scrollToFormStart();
   }
 
   function handleSubmit(values: ApplicationFormValues) {
@@ -148,8 +182,9 @@ export function ApplicationForm() {
     <>
       <form
         aria-busy={submission.isPending}
-        className="space-y-6"
+        className="scroll-mt-24 space-y-6"
         onSubmit={form.handleSubmit(handleSubmit)}
+        ref={formStartRef}
       >
         {rolesQuery.isPending ? (
           <LoadingState
@@ -209,6 +244,7 @@ export function ApplicationForm() {
 
       {submission.data ? (
         <ApplicationSuccessModal
+          onClose={closeSuccessModal}
           onSubmitAnother={resetApplication}
           submission={submission.data}
         />

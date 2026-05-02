@@ -20,6 +20,7 @@ export function RoleSelectField({
       disabled={disabled}
       error={form.formState.errors.roleId?.message}
       id="roleId"
+      isRequired
       label="Role"
       options={options}
       placeholder={placeholder}

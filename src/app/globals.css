@@ -3,9 +3,14 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 html {
+  background: #0c0a09;
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+html[data-theme="light"] {
   background: #fafaf9;
   color-scheme: light;
-  scroll-behavior: smooth;
 }
 
 html[data-theme="dark"] {
@@ -59,6 +64,43 @@ textarea {
   font: inherit;
 }
 
+@keyframes success-check-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  70% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes success-check-draw {
+  from {
+    stroke-dashoffset: 24;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.success-check {
+  animation: success-check-pop 280ms ease-out both;
+}
+
+.success-check path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: success-check-draw 420ms ease-out 160ms both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -70,5 +112,13 @@ textarea {
 
   button {
     transition-duration: 0ms;
+  }
+
+  .success-check,
+  .success-check path {
+    animation: none;
+    opacity: 1;
+    stroke-dashoffset: 0;
+    transform: none;
   }
 }

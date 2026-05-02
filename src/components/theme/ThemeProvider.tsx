@@ -19,17 +19,12 @@ type ThemeContextValue = {
 
 const STORAGE_KEY = "25th-staffing-theme";
 const THEME_CHANGE_EVENT = "25th-staffing-theme-change";
+const DEFAULT_THEME: Theme = "dark";
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 function isTheme(value: string | undefined | null): value is Theme {
   return value === "light" || value === "dark";
-}
-
-function getSystemTheme(): Theme {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
 }
 
 function getStoredTheme() {
@@ -42,7 +37,7 @@ function getDocumentTheme() {
 
 function getThemeSnapshot(): Theme {
   if (typeof window === "undefined") {
-    return "light";
+    return DEFAULT_THEME;
   }
 
   const documentTheme = getDocumentTheme();
@@ -57,7 +52,7 @@ function getThemeSnapshot(): Theme {
     return storedTheme;
   }
 
-  return getSystemTheme();
+  return DEFAULT_THEME;
 }
 
 function applyTheme(theme: Theme) {
@@ -76,37 +71,24 @@ function saveTheme(theme: Theme) {
 }
 
 function subscribeToThemeChange(callback: () => void) {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
   const handleThemeChange = () => {
     callback();
   };
 
   const handleStorageChange = () => {
     const storedTheme = getStoredTheme();
-    const nextTheme = isTheme(storedTheme) ? storedTheme : getSystemTheme();
+    const nextTheme = isTheme(storedTheme) ? storedTheme : DEFAULT_THEME;
 
     applyTheme(nextTheme);
     callback();
   };
 
-  const handleSystemChange = () => {
-    if (isTheme(getStoredTheme())) {
-      return;
-    }
-
-    applyTheme(getSystemTheme());
-    callback();
-  };
-
   window.addEventListener(THEME_CHANGE_EVENT, handleThemeChange);
   window.addEventListener("storage", handleStorageChange);
-  mediaQuery.addEventListener("change", handleSystemChange);
 
   return () => {
     window.removeEventListener(THEME_CHANGE_EVENT, handleThemeChange);
     window.removeEventListener("storage", handleStorageChange);
-    mediaQuery.removeEventListener("change", handleSystemChange);
   };
 }
 
@@ -114,7 +96,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const theme = useSyncExternalStore<Theme>(
     subscribeToThemeChange,
     getThemeSnapshot,
-    () => "light",
+    () => DEFAULT_THEME,
   );
 
   const setTheme = useCallback((nextTheme: Theme) => {

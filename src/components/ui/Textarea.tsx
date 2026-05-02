@@ -1,11 +1,13 @@
 import type { TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { FieldError } from "./FieldError";
+import { FieldLabel } from "./FieldLabel";
 
 type TextareaProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "id"> & {
   error?: string;
   helperText?: string;
   id: string;
+  isRequired?: boolean;
   label?: string;
 };
 
@@ -14,6 +16,7 @@ export function Textarea({
   error,
   helperText,
   id,
+  isRequired = false,
   label,
   rows = 5,
   ...props
@@ -25,12 +28,7 @@ export function Textarea({
   return (
     <div>
       {label ? (
-        <label
-          className="mb-1.5 block text-sm font-medium text-stone-700 dark:text-stone-200"
-          htmlFor={id}
-        >
-          {label}
-        </label>
+        <FieldLabel htmlFor={id} isRequired={isRequired} label={label} />
       ) : null}
       <textarea
         aria-describedby={describedBy}

@@ -12,6 +12,7 @@ export function ExperienceFields({ form }: ExperienceFieldsProps) {
         error={form.formState.errors.experienceYears?.message}
         id="experienceYears"
         inputMode="numeric"
+        isRequired
         label="Years of experience"
         min="0"
         placeholder="4"
@@ -21,6 +22,7 @@ export function ExperienceFields({ form }: ExperienceFieldsProps) {
       <Input
         error={form.formState.errors.resumeUrl?.message}
         id="resumeUrl"
+        isRequired
         label="Resume URL"
         placeholder="https://example.com/resume.pdf"
         type="url"

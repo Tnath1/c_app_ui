@@ -1,5 +1,6 @@
 export { Button } from "./Button";
 export { FieldError } from "./FieldError";
+export { FieldLabel } from "./FieldLabel";
 export { Input } from "./Input";
 export { Select } from "./Select";
 export { Textarea } from "./Textarea";

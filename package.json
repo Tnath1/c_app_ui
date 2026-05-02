@@ -1,6 +1,7 @@
 {
   "name": "candidate-app-ui",
   "version": "0.1.0",
+  "author": "Arome Jonathan Ukpoju",
   "private": true,
   "scripts": {
     "dev": "next dev",
