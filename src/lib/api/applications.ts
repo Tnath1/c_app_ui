@@ -4,7 +4,7 @@ import type {
   CandidateApplicationPayload,
 } from "@/types/application";
 
-type ApplicationState = "error";
+export type ApplicationState = "error";
 
 type SubmitApplicationOptions = {
   signal?: AbortSignal;

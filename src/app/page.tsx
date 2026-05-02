@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { ApplicationForm } from "@/components/application/ApplicationForm";
+import { LoadingState } from "@/components/states";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default function Home() {
@@ -78,7 +80,16 @@ export default function Home() {
           </div>
 
           <div className="pt-5">
-            <ApplicationForm />
+            <Suspense
+              fallback={
+                <LoadingState
+                  message="Preparing the application workspace."
+                  title="Loading application form"
+                />
+              }
+            >
+              <ApplicationForm />
+            </Suspense>
           </div>
         </section>
       </section>

@@ -1,7 +1,7 @@
 import { parseApiError } from "./errors";
 import type { Role, RolesResponse } from "@/types/role";
 
-type RoleState = "empty" | "error";
+export type RoleState = "empty" | "error";
 
 type GetRolesOptions = {
   signal?: AbortSignal;

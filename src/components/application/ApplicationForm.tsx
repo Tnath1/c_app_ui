@@ -2,9 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ApiError, getRoles, submitApplication } from "@/lib/api";
+import type { ApplicationState } from "@/lib/api/applications";
+import type { RoleState } from "@/lib/api/roles";
 import {
   applicationDefaultValues,
   applicationSchema,
@@ -13,6 +16,7 @@ import type {
   ApplicationFormInput,
   CandidateApplicationPayload,
 } from "@/types/application";
+import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { Button, FieldError, Input, Select, Textarea } from "@/components/ui";
 import type { SelectOption } from "@/components/ui";
 import type { ApplicationFormValues } from "@/lib/validation/application-schema";
@@ -40,23 +44,34 @@ function getErrorMessage(error: unknown) {
   return "Something went wrong. Please try again.";
 }
 
+function getRoleState(value: string | null): RoleState | undefined {
+  return value === "empty" || value === "error" ? value : undefined;
+}
+
+function getApplicationState(value: string | null): ApplicationState | undefined {
+  return value === "error" ? value : undefined;
+}
+
 function isApplicationField(value: string): value is ApplicationField {
   return value in fieldLabels;
 }
 
 function createRoleOptions(roles: Awaited<ReturnType<typeof getRoles>>) {
   return roles.map<SelectOption>((role) => ({
-    label: `${role.title} · ${role.location}`,
+    label: `${role.title} - ${role.location}`,
     value: role.id,
   }));
 }
 
 export function ApplicationForm() {
   const [formError, setFormError] = useState<string | undefined>();
+  const searchParams = useSearchParams();
+  const rolesState = getRoleState(searchParams.get("rolesState"));
+  const submitState = getApplicationState(searchParams.get("submitState"));
 
   const rolesQuery = useQuery({
-    queryFn: ({ signal }) => getRoles({ signal }),
-    queryKey: ["roles"],
+    queryFn: ({ signal }) => getRoles({ signal, state: rolesState }),
+    queryKey: ["roles", rolesState],
   });
 
   const roleOptions = useMemo(() => {
@@ -71,7 +86,7 @@ export function ApplicationForm() {
 
   const submission = useMutation({
     mutationFn: (application: CandidateApplicationPayload) =>
-      submitApplication(application),
+      submitApplication(application, { state: submitState }),
     onError: (error) => {
       if (error instanceof ApiError && error.fieldErrors) {
         Object.entries(error.fieldErrors).forEach(([field, messages]) => {
@@ -93,11 +108,12 @@ export function ApplicationForm() {
     },
   });
 
+  const isRolesEmpty = rolesQuery.data?.length === 0;
   const isRoleSelectDisabled =
     rolesQuery.isPending ||
     rolesQuery.isError ||
     !rolesQuery.data ||
-    rolesQuery.data.length === 0;
+    isRolesEmpty;
 
   const rolePlaceholder = rolesQuery.isPending
     ? "Loading roles..."
@@ -142,8 +158,43 @@ export function ApplicationForm() {
   }
 
   return (
-    <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
-      <div className="grid gap-4 sm:grid-cols-2">
+    <form
+      aria-busy={submission.isPending}
+      className="space-y-6"
+      onSubmit={form.handleSubmit(handleSubmit)}
+    >
+      {rolesQuery.isPending ? (
+        <LoadingState
+          message="We are checking the current openings before you apply."
+          title="Loading open roles"
+        />
+      ) : null}
+
+      {rolesQuery.isError ? (
+        <ErrorState
+          action={
+            <Button
+              onClick={() => rolesQuery.refetch()}
+              size="sm"
+              type="button"
+              variant="secondary"
+            >
+              Retry
+            </Button>
+          }
+          message={getErrorMessage(rolesQuery.error)}
+          title="Roles could not be loaded"
+        />
+      ) : null}
+
+      {isRolesEmpty ? (
+        <EmptyState
+          message="Please check back later or contact the staffing team for upcoming openings."
+          title="No open roles available"
+        />
+      ) : null}
+
+      <fieldset className="grid gap-4 sm:grid-cols-2" disabled={submission.isPending}>
         <div className="sm:col-span-2">
           <Select
             disabled={isRoleSelectDisabled}
@@ -154,26 +205,6 @@ export function ApplicationForm() {
             placeholder={rolePlaceholder}
             {...form.register("roleId")}
           />
-          {rolesQuery.isError ? (
-            <div className="mt-2 flex items-center justify-between gap-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 dark:border-red-900/60 dark:bg-red-950/30">
-              <p className="text-sm text-red-700 dark:text-red-300">
-                {getErrorMessage(rolesQuery.error)}
-              </p>
-              <Button
-                onClick={() => rolesQuery.refetch()}
-                size="sm"
-                type="button"
-                variant="secondary"
-              >
-                Retry
-              </Button>
-            </div>
-          ) : null}
-          {rolesQuery.data?.length === 0 ? (
-            <p className="mt-2 text-sm text-stone-500 dark:text-stone-400">
-              There are no open roles available right now.
-            </p>
-          ) : null}
         </div>
 
         <Input
@@ -255,10 +286,18 @@ export function ApplicationForm() {
             {...form.register("coverLetter")}
           />
         </div>
-      </div>
+      </fieldset>
 
       <div className="border-t border-stone-200 pt-4 dark:border-stone-800">
-        <FieldError>{formError}</FieldError>
+        {formError ? (
+          <div className="mb-4">
+            <ErrorState
+              message={formError}
+              title="Application could not be submitted"
+            />
+          </div>
+        ) : null}
+        <FieldError>{form.formState.errors.root?.message}</FieldError>
         <Button
           className="w-full sm:w-auto"
           disabled={isRoleSelectDisabled}
