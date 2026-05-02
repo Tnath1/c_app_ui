@@ -11,7 +11,7 @@ export function FieldLabel({
 }: FieldLabelProps) {
   return (
     <label
-      className="mb-1.5 block text-sm font-medium text-stone-700 dark:text-stone-200"
+      className="mb-2 block text-base font-medium text-stone-700 dark:text-stone-200"
       htmlFor={htmlFor}
     >
       {label}
