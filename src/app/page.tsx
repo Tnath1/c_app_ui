@@ -1,3 +1,4 @@
+import { ApplicationForm } from "@/components/application/ApplicationForm";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default function Home() {
@@ -76,30 +77,9 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="grid gap-3 py-5">
-            {[
-              "Role selection",
-              "Personal information",
-              "Experience and links",
-              "Review and submit",
-            ].map((item, index) => (
-              <div
-                className="flex items-center gap-3 rounded-md border border-stone-200 px-3.5 py-2.5 dark:border-stone-800"
-                key={item}
-              >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-stone-100 text-xs font-medium text-stone-700 dark:bg-stone-800 dark:text-stone-200">
-                  {index + 1}
-                </span>
-                <span className="text-sm font-medium text-stone-800 dark:text-stone-200">
-                  {item}
-                </span>
-              </div>
-            ))}
+          <div className="pt-5">
+            <ApplicationForm />
           </div>
-
-          <p className="border-t border-stone-200 pt-4 text-xs text-stone-500 dark:border-stone-800 dark:text-stone-400">
-            Four short sections before submission.
-          </p>
         </section>
       </section>
     </main>
