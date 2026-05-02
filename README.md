@@ -113,3 +113,7 @@ Submit loading appears briefly after submitting the form. The success modal appe
 ## Notes
 
 The UI is intentionally restrained: compact navigation, clear form structure, accessible labels, visible feedback states, and consistent light/dark styling.
+
+## Author
+
+Arome Jonathan Ukpoju
