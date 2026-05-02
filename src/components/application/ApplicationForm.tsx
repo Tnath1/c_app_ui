@@ -17,8 +17,13 @@ import type {
   CandidateApplicationPayload,
 } from "@/types/application";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
-import { Button, FieldError, Input, Select, Textarea } from "@/components/ui";
+import { Button } from "@/components/ui";
 import type { SelectOption } from "@/components/ui";
+import { ApplicationSubmitBar } from "./ApplicationSubmitBar";
+import { ApplicationSuccessModal } from "./ApplicationSuccessModal";
+import { ExperienceFields } from "./ExperienceFields";
+import { PersonalInfoFields } from "./PersonalInfoFields";
+import { RoleSelectField } from "./RoleSelectField";
 import type { ApplicationFormValues } from "@/lib/validation/application-schema";
 
 type ApplicationField = keyof ApplicationFormInput;
@@ -66,9 +71,12 @@ function createRoleOptions(roles: Awaited<ReturnType<typeof getRoles>>) {
 export function ApplicationForm() {
   const [formError, setFormError] = useState<string | undefined>();
   const searchParams = useSearchParams();
+
+  // These params let us preview loading/error/empty states without adding demo controls to the UI.
   const rolesState = getRoleState(searchParams.get("rolesState"));
   const submitState = getApplicationState(searchParams.get("submitState"));
 
+  // TanStack Query owns server state for open roles: loading, caching, retry, and errors.
   const rolesQuery = useQuery({
     queryFn: ({ signal }) => getRoles({ signal, state: rolesState }),
     queryKey: ["roles", rolesState],
@@ -84,10 +92,12 @@ export function ApplicationForm() {
     resolver: zodResolver(applicationSchema),
   });
 
+  // The mutation sends the Zod-normalized payload to the mock Next.js API route.
   const submission = useMutation({
     mutationFn: (application: CandidateApplicationPayload) =>
       submitApplication(application, { state: submitState }),
     onError: (error) => {
+      // API validation errors are mapped back to React Hook Form fields.
       if (error instanceof ApiError && error.fieldErrors) {
         Object.entries(error.fieldErrors).forEach(([field, messages]) => {
           if (!isApplicationField(field) || !messages?.[0]) {
@@ -134,180 +144,75 @@ export function ApplicationForm() {
     submission.mutate(values);
   }
 
-  if (submission.data) {
-    return (
-      <div className="rounded-md border border-stone-200 bg-stone-50 p-4 dark:border-stone-800 dark:bg-stone-950">
-        <p className="text-xs font-medium uppercase tracking-normal text-stone-500 dark:text-stone-400">
-          Application received
-        </p>
-        <h3 className="mt-2 text-xl font-semibold text-stone-950 dark:text-stone-50">
-          Thank you, {submission.data.candidateName}.
-        </h3>
-        <p className="mt-2 text-sm leading-6 text-stone-600 dark:text-stone-300">
-          {submission.data.message} We will contact you by email when there is
-          an update.
-        </p>
-        <p className="mt-4 text-xs text-stone-500 dark:text-stone-400">
-          Reference: {submission.data.applicationId}
-        </p>
-        <Button className="mt-5" onClick={resetApplication} variant="secondary">
-          Submit another application
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <form
-      aria-busy={submission.isPending}
-      className="space-y-6"
-      onSubmit={form.handleSubmit(handleSubmit)}
-    >
-      {rolesQuery.isPending ? (
-        <LoadingState
-          message="We are checking the current openings before you apply."
-          title="Loading open roles"
-        />
-      ) : null}
-
-      {rolesQuery.isError ? (
-        <ErrorState
-          action={
-            <Button
-              onClick={() => rolesQuery.refetch()}
-              size="sm"
-              type="button"
-              variant="secondary"
-            >
-              Retry
-            </Button>
-          }
-          message={getErrorMessage(rolesQuery.error)}
-          title="Roles could not be loaded"
-        />
-      ) : null}
-
-      {isRolesEmpty ? (
-        <EmptyState
-          message="Please check back later or contact the staffing team for upcoming openings."
-          title="No open roles available"
-        />
-      ) : null}
-
-      <fieldset className="grid gap-4 sm:grid-cols-2" disabled={submission.isPending}>
-        <div className="sm:col-span-2">
-          <Select
-            disabled={isRoleSelectDisabled}
-            error={form.formState.errors.roleId?.message}
-            id="roleId"
-            label="Role"
-            options={roleOptions}
-            placeholder={rolePlaceholder}
-            {...form.register("roleId")}
+    <>
+      <form
+        aria-busy={submission.isPending}
+        className="space-y-6"
+        onSubmit={form.handleSubmit(handleSubmit)}
+      >
+        {rolesQuery.isPending ? (
+          <LoadingState
+            message="We are checking the current openings before you apply."
+            title="Loading open roles"
           />
-        </div>
+        ) : null}
 
-        <Input
-          autoComplete="name"
-          error={form.formState.errors.fullName?.message}
-          id="fullName"
-          label="Full name"
-          placeholder="Jane Doe"
-          {...form.register("fullName")}
-        />
-        <Input
-          autoComplete="email"
-          error={form.formState.errors.email?.message}
-          id="email"
-          label="Email address"
-          placeholder="jane@example.com"
-          type="email"
-          {...form.register("email")}
-        />
-        <Input
-          autoComplete="tel"
-          error={form.formState.errors.phone?.message}
-          id="phone"
-          label="Phone number"
-          placeholder="+234 800 000 0000"
-          type="tel"
-          {...form.register("phone")}
-        />
-        <Input
-          autoComplete="address-level2"
-          error={form.formState.errors.location?.message}
-          id="location"
-          label="Location"
-          placeholder="Lagos, Nigeria"
-          {...form.register("location")}
-        />
-        <Input
-          error={form.formState.errors.experienceYears?.message}
-          id="experienceYears"
-          inputMode="numeric"
-          label="Years of experience"
-          min="0"
-          placeholder="4"
-          type="number"
-          {...form.register("experienceYears")}
-        />
-        <Input
-          error={form.formState.errors.resumeUrl?.message}
-          id="resumeUrl"
-          label="Resume URL"
-          placeholder="https://example.com/resume.pdf"
-          type="url"
-          {...form.register("resumeUrl")}
-        />
-        <Input
-          error={form.formState.errors.linkedInUrl?.message}
-          id="linkedInUrl"
-          label="LinkedIn URL"
-          placeholder="https://linkedin.com/in/janedoe"
-          type="url"
-          {...form.register("linkedInUrl")}
-        />
-        <Input
-          error={form.formState.errors.portfolioUrl?.message}
-          id="portfolioUrl"
-          label="Portfolio URL"
-          placeholder="https://janedoe.com"
-          type="url"
-          {...form.register("portfolioUrl")}
-        />
-        <div className="sm:col-span-2">
-          <Textarea
-            error={form.formState.errors.coverLetter?.message}
-            helperText="Optional. Keep it short and specific."
-            id="coverLetter"
-            label="Short note"
-            placeholder="Tell us what kind of role you are looking for."
-            rows={4}
-            {...form.register("coverLetter")}
+        {rolesQuery.isError ? (
+          <ErrorState
+            action={
+              <Button
+                onClick={() => rolesQuery.refetch()}
+                size="sm"
+                type="button"
+                variant="secondary"
+              >
+                Retry
+              </Button>
+            }
+            message={getErrorMessage(rolesQuery.error)}
+            title="Roles could not be loaded"
           />
-        </div>
-      </fieldset>
+        ) : null}
 
-      <div className="border-t border-stone-200 pt-4 dark:border-stone-800">
-        {formError ? (
-          <div className="mb-4">
-            <ErrorState
-              message={formError}
-              title="Application could not be submitted"
+        {isRolesEmpty ? (
+          <EmptyState
+            message="Please check back later or contact the staffing team for upcoming openings."
+            title="No open roles available"
+          />
+        ) : null}
+
+        <fieldset
+          className="grid gap-4 sm:grid-cols-2"
+          disabled={submission.isPending}
+        >
+          <div className="sm:col-span-2">
+            <RoleSelectField
+              disabled={isRoleSelectDisabled}
+              form={form}
+              options={roleOptions}
+              placeholder={rolePlaceholder}
             />
           </div>
-        ) : null}
-        <FieldError>{form.formState.errors.root?.message}</FieldError>
-        <Button
-          className="w-full sm:w-auto"
-          disabled={isRoleSelectDisabled}
-          isLoading={submission.isPending}
-          loadingLabel="Submitting"
-          type="submit"
-        >
-          Submit application
-        </Button>
-      </div>
-    </form>
+
+          <PersonalInfoFields form={form} />
+          <ExperienceFields form={form} />
+        </fieldset>
+
+        <ApplicationSubmitBar
+          form={form}
+          formError={formError}
+          isDisabled={isRoleSelectDisabled}
+          isSubmitting={submission.isPending}
+        />
+      </form>
+
+      {submission.data ? (
+        <ApplicationSuccessModal
+          onSubmitAnother={resetApplication}
+          submission={submission.data}
+        />
+      ) : null}
+    </>
   );
 }

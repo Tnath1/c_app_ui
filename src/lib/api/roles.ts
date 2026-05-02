@@ -21,6 +21,7 @@ function getRolesUrl(state?: RoleState) {
 }
 
 export async function getRoles(options: GetRolesOptions = {}): Promise<Role[]> {
+  // Components call this typed client instead of calling fetch directly.
   const response = await fetch(getRolesUrl(options.state), {
     cache: "no-store",
     signal: options.signal,

@@ -21,6 +21,7 @@ export async function POST(request: Request) {
 
   await wait(RESPONSE_DELAY_MS);
 
+  // Used by the UI to verify submit-error behavior without a real backend failure.
   if (searchParams.get("state") === "error") {
     return NextResponse.json(
       {
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
     );
   }
 
+  // Route handlers receive the same payload a real backend endpoint would receive.
   let body: unknown;
 
   try {
@@ -43,6 +45,7 @@ export async function POST(request: Request) {
     );
   }
 
+  // The server validates again so the API contract is protected, not just the browser form.
   const parsedApplication = applicationSchema.safeParse(body);
 
   if (!parsedApplication.success) {
@@ -55,6 +58,7 @@ export async function POST(request: Request) {
     );
   }
 
+  // In a real API this would usually be a database lookup against available roles.
   const selectedRole = mockRoles.find(
     (role) => role.id === parsedApplication.data.roleId,
   );
@@ -71,6 +75,7 @@ export async function POST(request: Request) {
     );
   }
 
+  // Mock success response shaped like a real application submission receipt.
   return NextResponse.json(
     {
       applicationId: createApplicationId(),

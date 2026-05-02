@@ -27,6 +27,7 @@ export async function submitApplication(
   application: CandidateApplicationPayload,
   options: SubmitApplicationOptions = {},
 ): Promise<ApplicationSubmissionResponse> {
+  // This is the browser-to-API handoff for the candidate application payload.
   const response = await fetch(getApplicationUrl(options.state), {
     body: JSON.stringify(application),
     cache: "no-store",

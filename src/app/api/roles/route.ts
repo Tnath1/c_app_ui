@@ -17,6 +17,7 @@ export async function GET(request: Request) {
 
   await wait(RESPONSE_DELAY_MS);
 
+  // Query params let the UI preview required states without changing code.
   if (state === "error") {
     return NextResponse.json(
       {
@@ -26,6 +27,7 @@ export async function GET(request: Request) {
     );
   }
 
+  // The empty state is intentional; the frontend can show a proper no-roles message.
   if (state === "empty") {
     return NextResponse.json({ roles: [] } satisfies RolesResponse);
   }

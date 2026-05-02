@@ -22,10 +22,7 @@ export default function Home() {
               Candidate intake
             </p>
           </div>
-          <div className="flex items-center gap-2.5">
-            <div className="hidden rounded-full border border-stone-200 px-2.5 py-1 text-xs font-medium text-stone-600 sm:block dark:border-stone-800 dark:text-stone-300">
-              Application
-            </div>
+          <div className="flex items-center">
             <ThemeToggle />
           </div>
         </div>
