@@ -12,6 +12,7 @@ export function PersonalInfoFields({ form }: PersonalInfoFieldsProps) {
         autoComplete="name"
         error={form.formState.errors.fullName?.message}
         id="fullName"
+        isRequired
         label="Full name"
         placeholder="Jane Doe"
         {...form.register("fullName")}
@@ -20,6 +21,7 @@ export function PersonalInfoFields({ form }: PersonalInfoFieldsProps) {
         autoComplete="email"
         error={form.formState.errors.email?.message}
         id="email"
+        isRequired
         label="Email address"
         placeholder="jane@example.com"
         type="email"
@@ -29,6 +31,7 @@ export function PersonalInfoFields({ form }: PersonalInfoFieldsProps) {
         autoComplete="tel"
         error={form.formState.errors.phone?.message}
         id="phone"
+        isRequired
         label="Phone number"
         placeholder="+234 800 000 0000"
         type="tel"
@@ -38,6 +41,7 @@ export function PersonalInfoFields({ form }: PersonalInfoFieldsProps) {
         autoComplete="address-level2"
         error={form.formState.errors.location?.message}
         id="location"
+        isRequired
         label="Location"
         placeholder="Lagos, Nigeria"
         {...form.register("location")}

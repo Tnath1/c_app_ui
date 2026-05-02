@@ -1,6 +1,7 @@
 import type { SelectHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { FieldError } from "./FieldError";
+import { FieldLabel } from "./FieldLabel";
 
 export type SelectOption = {
   disabled?: boolean;
@@ -12,6 +13,7 @@ type SelectProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, "children" | "i
   error?: string;
   helperText?: string;
   id: string;
+  isRequired?: boolean;
   label?: string;
   options: SelectOption[];
   placeholder?: string;
@@ -23,6 +25,7 @@ export function Select({
   error,
   helperText,
   id,
+  isRequired = false,
   label,
   options,
   placeholder,
@@ -35,12 +38,7 @@ export function Select({
   return (
     <div>
       {label ? (
-        <label
-          className="mb-1.5 block text-sm font-medium text-stone-700 dark:text-stone-200"
-          htmlFor={id}
-        >
-          {label}
-        </label>
+        <FieldLabel htmlFor={id} isRequired={isRequired} label={label} />
       ) : null}
       <div className="relative">
         <select

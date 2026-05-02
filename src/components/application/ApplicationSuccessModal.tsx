@@ -2,11 +2,13 @@ import type { ApplicationSubmissionResponse } from "@/types/application";
 import { Button } from "@/components/ui";
 
 type ApplicationSuccessModalProps = {
+  onClose: () => void;
   onSubmitAnother: () => void;
   submission: ApplicationSubmissionResponse;
 };
 
 export function ApplicationSuccessModal({
+  onClose,
   onSubmitAnother,
   submission,
 }: ApplicationSuccessModalProps) {
@@ -18,7 +20,29 @@ export function ApplicationSuccessModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/55 px-4 py-6 backdrop-blur-sm"
       role="dialog"
     >
-      <div className="w-full max-w-md rounded-lg border border-stone-200 bg-white p-6 text-center shadow-xl dark:border-stone-800 dark:bg-stone-900">
+      <div className="relative w-full max-w-md rounded-lg border border-stone-200 bg-white p-6 text-center shadow-xl dark:border-stone-800 dark:bg-stone-900">
+        <button
+          aria-label="Close confirmation"
+          className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-md text-stone-500 outline-none transition-colors hover:bg-stone-100 hover:text-stone-900 focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-50 dark:focus-visible:ring-stone-100 dark:focus-visible:ring-offset-stone-900"
+          onClick={onClose}
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m6 6 8 8M14 6l-8 8"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeWidth="1.8"
+            />
+          </svg>
+        </button>
+
         <div className="success-check mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
           <svg
             aria-hidden="true"

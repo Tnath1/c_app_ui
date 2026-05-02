@@ -1,11 +1,13 @@
 import type { InputHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { FieldError } from "./FieldError";
+import { FieldLabel } from "./FieldLabel";
 
 type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id"> & {
   error?: string;
   helperText?: string;
   id: string;
+  isRequired?: boolean;
   label?: string;
 };
 
@@ -14,6 +16,7 @@ export function Input({
   error,
   helperText,
   id,
+  isRequired = false,
   label,
   ...props
 }: InputProps) {
@@ -24,12 +27,7 @@ export function Input({
   return (
     <div>
       {label ? (
-        <label
-          className="mb-1.5 block text-sm font-medium text-stone-700 dark:text-stone-200"
-          htmlFor={id}
-        >
-          {label}
-        </label>
+        <FieldLabel htmlFor={id} isRequired={isRequired} label={label} />
       ) : null}
       <input
         aria-describedby={describedBy}
