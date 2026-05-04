@@ -4,9 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { getRoles } from "@/lib/api";
 import type { RoleState } from "@/lib/api/roles";
-import { EmptyState, ErrorState, LoadingState } from "@/components/states";
+import { EmptyState, ErrorState } from "@/components/states";
 import { Button, LiveRegion } from "@/components/ui";
 import { RoleList } from "@/components/roles/RoleList";
+import { RoleListSkeleton } from "@/components/roles/RoleListSkeleton";
 
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) {
@@ -51,10 +52,7 @@ export function ApplicationWorkspace() {
       />
 
       {rolesQuery.isPending ? (
-        <LoadingState
-          message="We are checking the current openings before you apply."
-          title="Loading open roles"
-        />
+        <RoleListSkeleton />
       ) : null}
 
       {rolesQuery.isError ? (
