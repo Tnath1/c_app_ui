@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { ResumeAttachment } from "@/types/application";
 import type { ApplicationFormInput } from "@/types/application";
 
 const PHONE_PATTERN = /^[+\d][\d\s().-]{6,23}$/;
@@ -21,11 +22,7 @@ const optionalUrlField = z
     "Enter a valid URL including https://.",
   );
 
-const requiredUrlField = z
-  .string()
-  .trim()
-  .min(1, "Add a resume link.")
-  .refine(isValidHttpUrl, "Enter a valid URL including https://.");
+export const MAX_RESUME_SIZE_BYTES = 4 * 1024 * 1024;
 
 const experienceYearsField = z
   .string()
@@ -40,6 +37,20 @@ const experienceYearsField = z
       .min(0, "Experience cannot be negative.")
       .max(60, "Enter a realistic number of years."),
   );
+
+const resumeAttachmentField = z
+  .object({
+    base64: z.string().min(1, "Upload your resume PDF."),
+    fileName: z.string().min(1, "Upload your resume PDF."),
+    fileSize: z
+      .number()
+      .max(MAX_RESUME_SIZE_BYTES, "Keep your resume under 4MB."),
+    fileType: z.literal("application/pdf"),
+  })
+  .optional()
+  .refine((value): value is ResumeAttachment => Boolean(value), {
+    message: "Upload your resume PDF.",
+  });
 
 export const applicationSchema = z.object({
   coverLetter: z
@@ -65,8 +76,9 @@ export const applicationSchema = z.object({
     .min(1, "Enter your phone number.")
     .regex(PHONE_PATTERN, "Enter a valid phone number."),
   portfolioUrl: optionalUrlField,
-  resumeUrl: requiredUrlField,
+  resume: resumeAttachmentField,
   roleId: z.string().trim().min(1, "Select a role."),
+  skills: z.array(z.string()).min(1, "Select at least one technical skill."),
 });
 
 export const applicationDefaultValues = {
@@ -78,8 +90,9 @@ export const applicationDefaultValues = {
   location: "",
   phone: "",
   portfolioUrl: "",
-  resumeUrl: "",
+  resume: undefined,
   roleId: "",
+  skills: [],
 } satisfies ApplicationFormInput;
 
 export type ApplicationFormValues = z.output<typeof applicationSchema>;

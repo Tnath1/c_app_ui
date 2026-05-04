@@ -13,8 +13,9 @@ export const applicationFieldLabels: Record<ApplicationField, string> = {
   location: "Location",
   phone: "Phone number",
   portfolioUrl: "Portfolio URL",
-  resumeUrl: "Resume URL",
+  resume: "Resume PDF",
   roleId: "Role",
+  skills: "Technical skills",
 };
 
 const applicationFieldOrder: ApplicationField[] = [
@@ -24,7 +25,8 @@ const applicationFieldOrder: ApplicationField[] = [
   "phone",
   "location",
   "experienceYears",
-  "resumeUrl",
+  "skills",
+  "resume",
   "linkedInUrl",
   "portfolioUrl",
   "coverLetter",
