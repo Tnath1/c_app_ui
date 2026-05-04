@@ -1,12 +1,11 @@
+import Link from "next/link";
 import type { Role } from "@/types/role";
-import { Button } from "@/components/ui";
 
 type RoleCardProps = {
-  onApply: (roleId: string) => void;
   role: Role;
 };
 
-export function RoleCard({ onApply, role }: RoleCardProps) {
+export function RoleCard({ role }: RoleCardProps) {
   const applicantLabel =
     role.applicantCount === 1 ? "1 applicant" : `${role.applicantCount} applicants`;
 
@@ -38,9 +37,12 @@ export function RoleCard({ onApply, role }: RoleCardProps) {
       </p>
 
       <div className="mt-5">
-        <Button onClick={() => onApply(role.id)} type="button">
+        <Link
+          className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-stone-950 px-4 text-sm font-medium text-white shadow-sm outline-none transition-colors hover:bg-stone-800 focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-stone-100 dark:text-stone-950 dark:hover:bg-white dark:focus-visible:ring-stone-100 dark:focus-visible:ring-offset-stone-950"
+          href={`/roles/${role.id}/apply`}
+        >
           Apply Now
-        </Button>
+        </Link>
       </div>
     </article>
   );

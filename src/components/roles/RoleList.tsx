@@ -2,11 +2,10 @@ import type { Role } from "@/types/role";
 import { RoleCard } from "./RoleCard";
 
 type RoleListProps = {
-  onApply: (roleId: string) => void;
   roles: Role[];
 };
 
-export function RoleList({ onApply, roles }: RoleListProps) {
+export function RoleList({ roles }: RoleListProps) {
   return (
     <section aria-labelledby="open-roles-title">
       <div className="mb-4">
@@ -23,7 +22,7 @@ export function RoleList({ onApply, roles }: RoleListProps) {
 
       <div className="grid gap-4">
         {roles.map((role) => (
-          <RoleCard key={role.id} onApply={onApply} role={role} />
+          <RoleCard key={role.id} role={role} />
         ))}
       </div>
     </section>
