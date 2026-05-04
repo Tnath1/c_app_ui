@@ -1,3 +1,5 @@
+import { RoleListHeader } from "./RoleListHeader";
+
 function SkeletonLine({ className = "" }: { className?: string }) {
   return (
     <div
@@ -38,11 +40,11 @@ function RoleCardSkeleton() {
 
 export function RoleListSkeleton() {
   return (
-    <section aria-label="Loading open roles">
-      <div className="mb-4">
-        <SkeletonLine className="h-4 w-24" />
-        <SkeletonLine className="mt-2 h-7 w-72 max-w-full" />
-      </div>
+    <section aria-labelledby="open-roles-title" aria-busy="true">
+      <RoleListHeader />
+      <p className="sr-only" role="status">
+        Loading open roles.
+      </p>
 
       <div className="grid gap-4">
         <RoleCardSkeleton />

@@ -10,7 +10,7 @@ export default function Home() {
 
       <section
         id="main-content"
-        className="mx-auto grid w-full max-w-5xl gap-8 px-5 py-9 sm:px-6 lg:py-11"
+        className="grid w-full gap-8 px-5 py-9 sm:px-6 lg:px-8 lg:py-11"
       >
         <aside>
           <p className="text-sm font-medium uppercase tracking-normal text-stone-500 dark:text-stone-400">
