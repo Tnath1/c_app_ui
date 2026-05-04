@@ -2,7 +2,6 @@ import type { Role } from "@/types/role";
 
 export const mockRoles: Role[] = [
   {
-    applicantCount: 3,
     description:
       "Build polished, responsive interfaces for recruiting workflows, working closely with product and backend teams to ship high-quality candidate experiences.",
     department: "Engineering",
@@ -14,7 +13,6 @@ export const mockRoles: Role[] = [
     workplace: "Remote",
   },
   {
-    applicantCount: 5,
     description:
       "Design clean product flows for candidate and recruiter experiences, turning research and product requirements into precise interface systems.",
     department: "Design",
@@ -26,7 +24,6 @@ export const mockRoles: Role[] = [
     workplace: "Hybrid",
   },
   {
-    applicantCount: 2,
     description:
       "Coordinate recruiting operations, candidate communication, and workflow quality across retained search engagements for global hiring teams.",
     department: "Talent Operations",

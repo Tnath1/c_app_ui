@@ -2,7 +2,6 @@ export type EmploymentType = "Full-time" | "Contract" | "Part-time";
 export type WorkplaceType = "Remote" | "Hybrid" | "On-site";
 
 export type Role = {
-  applicantCount: number;
   description: string;
   department: string;
   employmentType: EmploymentType;

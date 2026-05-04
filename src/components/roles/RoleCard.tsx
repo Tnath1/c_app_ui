@@ -6,9 +6,6 @@ type RoleCardProps = {
 };
 
 export function RoleCard({ role }: RoleCardProps) {
-  const applicantLabel =
-    role.applicantCount === 1 ? "1 applicant" : `${role.applicantCount} applicants`;
-
   return (
     <article className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-900">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -27,7 +24,6 @@ export function RoleCard({ role }: RoleCardProps) {
             <span>{role.location}</span>
             <span>{role.employmentType}</span>
             <span>{role.salaryRange}</span>
-            <span>{applicantLabel}</span>
           </div>
         </div>
       </div>

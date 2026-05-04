@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { ApplicationForm } from "@/components/application/ApplicationForm";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { SelectedRoleSummary } from "@/components/roles/SelectedRoleSummary";
@@ -23,10 +24,16 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
       <AppHeader />
 
       <section
-        className="mx-auto grid w-full max-w-3xl gap-8 px-5 py-9 sm:px-6 lg:py-11"
+        className="mx-auto grid w-full max-w-4xl gap-8 px-5 py-9 sm:px-6 lg:py-11"
         id="main-content"
       >
         <div>
+          <Link
+            className="mb-5 inline-flex items-center text-sm font-medium text-stone-500 transition-colors hover:text-stone-950 dark:text-stone-400 dark:hover:text-stone-50"
+            href="/"
+          >
+            Back to open roles
+          </Link>
           <h1 className="text-3xl font-semibold tracking-normal text-stone-950 dark:text-stone-50">
             Apply for this role
           </h1>
