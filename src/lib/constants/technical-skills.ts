@@ -1,0 +1,17 @@
+export const technicalSkills = [
+  "React",
+  "TypeScript",
+  "JavaScript",
+  "Next.js",
+  "Vue.js",
+  "Angular",
+  "Node.js",
+  "GraphQL",
+  "REST APIs",
+  "CSS / Tailwind",
+  "Testing (Jest/Cypress)",
+  "Docker",
+  "AWS / GCP",
+  "Git",
+  "Figma / Design Systems",
+];

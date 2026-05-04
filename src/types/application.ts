@@ -1,5 +1,12 @@
 export type ApplicationStatus = "received" | "reviewing" | "matched";
 
+export type ResumeAttachment = {
+  base64: string;
+  fileName: string;
+  fileSize: number;
+  fileType: "application/pdf";
+};
+
 export type ApplicationFormInput = {
   coverLetter: string;
   email: string;
@@ -9,8 +16,9 @@ export type ApplicationFormInput = {
   location: string;
   phone: string;
   portfolioUrl: string;
-  resumeUrl: string;
+  resume?: ResumeAttachment;
   roleId: string;
+  skills: string[];
 };
 
 export type CandidateApplicationPayload = {
@@ -22,8 +30,9 @@ export type CandidateApplicationPayload = {
   location: string;
   phone: string;
   portfolioUrl: string;
-  resumeUrl: string;
+  resume: ResumeAttachment;
   roleId: string;
+  skills: string[];
 };
 
 export type ApplicationSubmissionResponse = {

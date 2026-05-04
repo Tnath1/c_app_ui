@@ -1,5 +1,7 @@
 import { Input, Textarea } from "@/components/ui";
 import type { ApplicationFormController } from "./application-form-types";
+import { ResumeUploadField } from "./ResumeUploadField";
+import { SkillsField } from "./SkillsField";
 
 type ExperienceFieldsProps = {
   form: ApplicationFormController;
@@ -19,15 +21,8 @@ export function ExperienceFields({ form }: ExperienceFieldsProps) {
         type="number"
         {...form.register("experienceYears")}
       />
-      <Input
-        error={form.formState.errors.resumeUrl?.message}
-        id="resumeUrl"
-        isRequired
-        label="Resume URL"
-        placeholder="https://example.com/resume.pdf"
-        type="url"
-        {...form.register("resumeUrl")}
-      />
+      <SkillsField form={form} />
+      <ResumeUploadField form={form} />
       <Input
         error={form.formState.errors.linkedInUrl?.message}
         id="linkedInUrl"

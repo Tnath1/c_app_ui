@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { ApplicationForm } from "@/components/application/ApplicationForm";
+import { ApplicationWorkspace } from "@/components/application/ApplicationWorkspace";
 import { LoadingState } from "@/components/states";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
@@ -65,35 +65,16 @@ export default function Home() {
           </div>
         </aside>
 
-        <section
-          aria-labelledby="application-form-title"
-          className="rounded-lg border border-stone-200 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-900"
+        <Suspense
+          fallback={
+            <LoadingState
+              message="Preparing the application workspace."
+              title="Loading application workspace"
+            />
+          }
         >
-          <div className="border-b border-stone-200 pb-5 dark:border-stone-800">
-            <p className="text-sm font-medium uppercase tracking-normal text-stone-500 dark:text-stone-400">
-              Application overview
-            </p>
-            <h2
-              id="application-form-title"
-              className="mt-1.5 text-2xl font-semibold tracking-normal text-stone-950 dark:text-stone-50"
-            >
-              Candidate profile intake
-            </h2>
-          </div>
-
-          <div className="pt-6">
-            <Suspense
-              fallback={
-                <LoadingState
-                  message="Preparing the application workspace."
-                  title="Loading application form"
-                />
-              }
-            >
-              <ApplicationForm />
-            </Suspense>
-          </div>
-        </section>
+          <ApplicationWorkspace />
+        </Suspense>
       </section>
     </main>
   );

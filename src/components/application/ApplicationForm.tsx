@@ -1,14 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { FieldErrors } from "react-hook-form";
-import { ApiError, getRoles, submitApplication } from "@/lib/api";
+import { ApiError, submitApplication } from "@/lib/api";
 import type { ApplicationState } from "@/lib/api/applications";
-import type { RoleState } from "@/lib/api/roles";
 import {
   applicationDefaultValues,
   applicationSchema,
@@ -17,8 +16,8 @@ import type {
   ApplicationFormInput,
   CandidateApplicationPayload,
 } from "@/types/application";
-import { EmptyState, ErrorState, LoadingState } from "@/components/states";
-import { Button, LiveRegion } from "@/components/ui";
+import type { Role } from "@/types/role";
+import { LiveRegion } from "@/components/ui";
 import type { SelectOption } from "@/components/ui";
 import { ApplicationSubmitBar } from "./ApplicationSubmitBar";
 import { ApplicationSuccessModal } from "./ApplicationSuccessModal";
@@ -43,22 +42,33 @@ function getErrorMessage(error: unknown) {
   return "Something went wrong. Please try again.";
 }
 
-function getRoleState(value: string | null): RoleState | undefined {
-  return value === "empty" || value === "error" ? value : undefined;
-}
-
 function getApplicationState(value: string | null): ApplicationState | undefined {
   return value === "error" ? value : undefined;
 }
 
-function createRoleOptions(roles: Awaited<ReturnType<typeof getRoles>>) {
+function createRoleOptions(roles: Role[]) {
   return roles.map<SelectOption>((role) => ({
     label: `${role.title} - ${role.location}`,
     value: role.id,
   }));
 }
 
-export function ApplicationForm() {
+function getInitialValues(selectedRoleId?: string): ApplicationFormInput {
+  return {
+    ...applicationDefaultValues,
+    roleId: selectedRoleId || applicationDefaultValues.roleId,
+  };
+}
+
+type ApplicationFormProps = {
+  roles: Role[];
+  selectedRoleId?: string;
+};
+
+export function ApplicationForm({
+  roles,
+  selectedRoleId,
+}: ApplicationFormProps) {
   const [formError, setFormError] = useState<string | undefined>();
   const [liveErrorMessage, setLiveErrorMessage] = useState<
     string | undefined
@@ -66,25 +76,28 @@ export function ApplicationForm() {
   const formStartRef = useRef<HTMLFormElement>(null);
   const searchParams = useSearchParams();
 
-  // These params let us preview loading/error/empty states without adding demo controls to the UI.
-  const rolesState = getRoleState(searchParams.get("rolesState"));
   const submitState = getApplicationState(searchParams.get("submitState"));
 
-  // TanStack Query owns server state for open roles: loading, caching, retry, and errors.
-  const rolesQuery = useQuery({
-    queryFn: ({ signal }) => getRoles({ signal, state: rolesState }),
-    queryKey: ["roles", rolesState],
-  });
-
   const roleOptions = useMemo(() => {
-    return rolesQuery.data ? createRoleOptions(rolesQuery.data) : [];
-  }, [rolesQuery.data]);
+    return createRoleOptions(roles);
+  }, [roles]);
 
   const form = useForm<ApplicationFormInput, undefined, ApplicationFormValues>({
-    defaultValues: applicationDefaultValues,
+    defaultValues: getInitialValues(selectedRoleId),
     mode: "onBlur",
     resolver: zodResolver(applicationSchema),
   });
+
+  useEffect(() => {
+    if (!selectedRoleId) {
+      return;
+    }
+
+    form.setValue("roleId", selectedRoleId, {
+      shouldDirty: false,
+      shouldValidate: true,
+    });
+  }, [form, selectedRoleId]);
 
   // The mutation sends the Zod-normalized payload to the mock Next.js API route.
   const submission = useMutation({
@@ -132,20 +145,8 @@ export function ApplicationForm() {
     },
   });
 
-  const isRolesEmpty = rolesQuery.data?.length === 0;
-  const isRoleSelectDisabled =
-    rolesQuery.isPending ||
-    rolesQuery.isError ||
-    !rolesQuery.data ||
-    isRolesEmpty;
-
-  const rolePlaceholder = rolesQuery.isPending
-    ? "Loading roles..."
-    : rolesQuery.isError
-      ? "Roles unavailable"
-      : rolesQuery.data?.length === 0
-        ? "No open roles"
-        : "Select a role";
+  const isRoleSelectDisabled = roles.length === 0;
+  const rolePlaceholder = roles.length === 0 ? "No open roles" : "Select a role";
 
   const liveStatusMessage = useMemo(() => {
     if (submission.isPending) {
@@ -156,32 +157,23 @@ export function ApplicationForm() {
       return "Application received.";
     }
 
-    if (rolesQuery.isPending) {
-      return "Loading open roles.";
-    }
-
-    if (rolesQuery.isSuccess) {
-      return isRolesEmpty
-        ? "No open roles available."
-        : `${rolesQuery.data.length} open roles loaded.`;
-    }
-
     return undefined;
-  }, [
-    isRolesEmpty,
-    rolesQuery.data,
-    rolesQuery.isPending,
-    rolesQuery.isSuccess,
-    submission.data,
-    submission.isPending,
-  ]);
+  }, [submission.data, submission.isPending]);
 
-  const liveAlertMessage = rolesQuery.isError
-    ? `Roles could not be loaded. ${getErrorMessage(rolesQuery.error)}`
-    : liveErrorMessage;
+  const liveAlertMessage = liveErrorMessage;
 
   function focusField(field: ApplicationField) {
     window.requestAnimationFrame(() => {
+      if (field === "skills") {
+        document.getElementById("technical-skill-first")?.focus();
+        return;
+      }
+
+      if (field === "resume") {
+        document.getElementById("resume")?.focus();
+        return;
+      }
+
       form.setFocus(field);
     });
   }
@@ -232,7 +224,7 @@ export function ApplicationForm() {
 
   function resetApplication() {
     submission.reset();
-    form.reset(applicationDefaultValues);
+    form.reset(getInitialValues(selectedRoleId));
     setFormError(undefined);
     setLiveErrorMessage(undefined);
     scrollToFormStart();
@@ -242,7 +234,21 @@ export function ApplicationForm() {
   function handleSubmit(values: ApplicationFormValues) {
     setFormError(undefined);
     setLiveErrorMessage(undefined);
-    submission.mutate(values);
+
+    if (!values.resume) {
+      form.setError("resume", {
+        message: "Upload your resume PDF.",
+        type: "validate",
+      });
+      focusField("resume");
+      setLiveErrorMessage("Resume PDF needs attention. Upload your resume PDF.");
+      return;
+    }
+
+    submission.mutate({
+      ...values,
+      resume: values.resume,
+    });
   }
 
   function handleInvalidSubmit(errors: FieldErrors<ApplicationFormInput>) {
@@ -272,37 +278,6 @@ export function ApplicationForm() {
         onSubmit={form.handleSubmit(handleSubmit, handleInvalidSubmit)}
         ref={formStartRef}
       >
-        {rolesQuery.isPending ? (
-          <LoadingState
-            message="We are checking the current openings before you apply."
-            title="Loading open roles"
-          />
-        ) : null}
-
-        {rolesQuery.isError ? (
-          <ErrorState
-            action={
-              <Button
-                onClick={() => rolesQuery.refetch()}
-                size="sm"
-                type="button"
-                variant="secondary"
-              >
-                Retry
-              </Button>
-            }
-            message={getErrorMessage(rolesQuery.error)}
-            title="Roles could not be loaded"
-          />
-        ) : null}
-
-        {isRolesEmpty ? (
-          <EmptyState
-            message="Please check back later or contact the staffing team for upcoming openings."
-            title="No open roles available"
-          />
-        ) : null}
-
         <fieldset
           className="grid gap-4 sm:grid-cols-2"
           disabled={submission.isPending}
